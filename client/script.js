@@ -81,6 +81,7 @@ function toggleSecondPass(){
         check()
     }
 }
+
 // server functions
 
 function startRegistration(fullname, email, password){
