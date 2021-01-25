@@ -74,5 +74,6 @@
    - We get a success banner stating that the registration was successful <br/>
      I have also added a fallback error banner to indicate server errors <br/>
      <img src = "readme_assets/registrationSuccessful.jpg" width = "500"/>   
-
+   - Data on Heroku POSTGRES DataBase that saves a hashed password <br/>
+     <img src = "readme_assets/herokuDB.jpg" width = "500"/>
 # Thankyou ❤️
