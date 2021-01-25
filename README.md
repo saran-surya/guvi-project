@@ -17,6 +17,7 @@
 
   - The page is responsive 
   - **Verifies email** before registering them to the Database,
+  - **passwords are hashed** before sending the request to the server using a hash function
 ### Making xmlHttp async for better optimizations and error handling.
  - #### As we know that while we send data through xmlHttpRequests from js to the server, they might not be async, and here is how I made it work like one.
     - ##### wrapping the xmlHttpRequest inside a function that returns a PROMISE so i can await its result.
