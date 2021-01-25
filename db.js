@@ -1,11 +1,20 @@
 const Pool = require('pg').Pool
+
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'guvi',
-  password: 'demo@123',
-  port: 5432,
+  connectionString : process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 })
+pool.connect()
+// ------ local pool -------
+// const pool = new Pool({
+//   user: 'postgres',
+//   host: 'localhost',
+//   database: 'guvi',
+//   password: 'demo@123',
+//   port: 5432,
+// })
 
 const createUser = (request, response) => {
     try {
