@@ -1,0 +1,27 @@
+POST http://localhost:5000/register
+Content-Type: application/json
+
+{
+    "name":"test-2",
+    "email":"testing@g.co",
+    "password":"testing"
+}
+
+###
+DELETE http://localhost:5000/delete/0928725858
+
+###
+POST  http://localhost:5000/user/0928725857
+Content-Type: application/json
+
+{
+    "currentplan": "3M",
+    "currentstatus": "true",
+    "joindate" : "DEC 2020"
+}
+
+###
+GET http://localhost:5000/members/all
+
+###
+GET http://localhost:5000/members/ending
