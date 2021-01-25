@@ -1,15 +1,29 @@
 var OTP = "";
 var isTrue = false;
 var lclPassword = "";
+
+// hash function
+String.prototype.hashCode = function(){
+    var hash = 0;
+    if (this.length == 0) return hash;
+    for (i = 0; i < this.length; i++) {
+        char = this.charCodeAt(i);
+        hash = ((hash<<5)-hash)+char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
+
 // listners
-
-
-
-
 document.getElementById("main-submit").addEventListener('click', (e)=>{
     e.preventDefault();
 })
 
+document.getElementById("main-form-container").addEventListener('submit', (e)=>{
+    e.preventDefault();
+})
+
+// check functions
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
@@ -27,7 +41,7 @@ function checkOTP(){
         isTrue = true
         console.log("OTP correct")
         document.getElementById("error-message-otp").className = "d-none"
-    }else if(indexOTP.length >= OTP.toString().length){
+    }else if(indexOTP.length !== OTP.toString().length){
         document.getElementById("error-message-otp").className = "error text-danger"
     }
     else{
@@ -35,6 +49,21 @@ function checkOTP(){
         console.log("INVALID")
     }
 }
+
+function check(){
+    const mainPass = document.getElementById("inputPassword").value;
+    const subPass = document.getElementById("checkPassword").value;
+    // console.log(mainPass)
+    // console.log(subPass)
+    if(mainPass !== subPass){
+        document.getElementById("error-message-password").className = "error text-danger"
+    } else {
+        document.getElementById("error-message-password").className = "d-none"
+    }
+}
+
+
+// toggler functions 
 
 function toggleLoader(condition){
     if(condition){
@@ -44,12 +73,22 @@ function toggleLoader(condition){
     }
 }
 
+function toggleSecondPass(){
+    if(document.getElementById("inputPassword").value.length === 0){
+        document.getElementById("checkPassword").disabled = true;
+    }else{
+        document.getElementById("checkPassword").disabled = false;
+        check()
+    }
+}
+// server functions
+
 function startRegistration(fullname, email, password){
-    // var url = `http://localhost:5000/register?name=${fullname}&email=${email}&password=${password}`;
-    var url = `/register?name=${fullname}&email=${email}&password=${password}`;
     // var url = "http://localhost:5000/test?name=saran&email=something@g.co&password=somthing";
     return new Promise((resolve, reject)=>{
         try{
+            var url = `/register?name=${fullname}&email=${email}&password=${password}`;
+            // var url = `http://localhost:5000/register?name=${fullname}&email=${email}&password=${password}`;
             var xhttp = new XMLHttpRequest()
             xhttp.open('POST', url, true)
             xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
@@ -90,7 +129,7 @@ async function sendOTP(){
             const res = JSON.parse(this.response)
             if(res.success){
                 OTP = res.OTP
-                console.log(OTP)
+                // console.log(OTP)
                 document.getElementById("checkOtp").disabled = false;
                 toggleLoader(false)
             }else{
@@ -107,38 +146,6 @@ async function sendOTP(){
     }
 }
 
-function toggleSecondPass(){
-    if(document.getElementById("inputPassword").value.length === 0){
-        document.getElementById("checkPassword").disabled = true;
-    }else{
-        document.getElementById("checkPassword").disabled = false;
-        check()
-    }
-}
-
-function check(){
-    const mainPass = document.getElementById("inputPassword").value;
-    const subPass = document.getElementById("checkPassword").value;
-    // console.log(mainPass)
-    // console.log(subPass)
-    if(mainPass !== subPass){
-        document.getElementById("error-message-password").className = "error text-danger"
-    } else {
-        document.getElementById("error-message-password").className = "d-none"
-    }
-}
-
-String.prototype.hashCode = function(){
-    var hash = 0;
-    if (this.length == 0) return hash;
-    for (i = 0; i < this.length; i++) {
-        char = this.charCodeAt(i);
-        hash = ((hash<<5)-hash)+char;
-        hash = hash & hash; // Convert to 32bit integer
-    }
-    return hash;
-}
-
 async function submitClick(){
     try {
         var btn = document.getElementById("form-validation-btn-click")
@@ -146,7 +153,8 @@ async function submitClick(){
         const emailID = document.getElementById("inputEmail").value;
         const mainPass = document.getElementById("inputPassword").value;
         const subPass = document.getElementById("checkPassword").value;
-        if(fullName.length >= 3 && validateEmail(emailID) && (mainPass === subPass) && isTrue){
+        const otpVal = document.getElementById("checkOtp").value
+        if(fullName.length >= 3 && validateEmail(emailID) && (mainPass === subPass) && isTrue && mainPass.length > 4){
             console.log("All set")
             toggleLoader(true)
             const hashedPass = mainPass.hashCode();
@@ -156,10 +164,13 @@ async function submitClick(){
                 console.log(res)
                 document.getElementById("register-screen").className = "d-none"
                 document.getElementById("success-screen").className = "d-flex flex-column success-wrapper"
+            }else if(res === false){
+                document.getElementById("register-screen").className = "d-none"
+                document.getElementById("main-error-screen").className = "d-flex flex-column success-wrapper"
             }
         } else{
-            if(document.getElementById("checkOtp").value.length === 0 && document.getElementById("checkOtp").value === OTP){
-                btn.click()
+            if(fullName.length < 3 || !validateEmail(emailID) || mainPass.length < 5 || otpVal.length < 6){
+                if(otpVal.length === 0)btn.click()
             }
     }
     } catch (error) {
