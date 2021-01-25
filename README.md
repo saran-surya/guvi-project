@@ -1,4 +1,4 @@
-# GUVI Web Developemnt Project
+# GUVI Web Development Project
 
 ## Goal : 
 #####  - To create a responsive "REGISTRATION PAGE" using HTML, SCSS, JS and BOOTSTRAP 
@@ -76,4 +76,5 @@
      <img src = "readme_assets/registrationSuccessful.jpg" width = "500"/>   
    - Data on Heroku POSTGRES DataBase that saves a hashed password <br/>
      <img src = "readme_assets/herokuDB.jpg" width = "500"/>
+    <br/>
 # Thankyou ❤️
