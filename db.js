@@ -19,6 +19,7 @@ pool.connect()
 //   password: 'demo@123',
 //   port: 5432,
 // })
+
 const createUser = (request, response) => {
     try {
         // console.log(request)
